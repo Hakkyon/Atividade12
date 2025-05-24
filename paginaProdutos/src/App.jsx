@@ -3,14 +3,16 @@ import { useState } from 'react';
 import { produtos } from './componentes/produtos.jsx';
 import Login from './pages/Login.jsx';
 import CriarLogin from './pages/CriarLogin.jsx';
-import { Link, Routes, Route } from 'react-router-dom';
+import { Link, Routes, Route, useLocation } from 'react-router-dom';
+import { useAuth } from './contexts/AuthContext';
 
 function App() {
   const [carrinho, setCarrinho] = useState({});
   const [carrinhoAberto, setCarrinhoAberto] = useState(false);
+  const { user, logout } = useAuth();
+  const location = useLocation();
 
   const adicionarAoCarrinho = (produto) => {
-    console.log('clicou', produto.id, produto.nome);
     setCarrinho(prev => {
       const novo = { ...prev };
       if (novo[produto.id]) {
@@ -31,15 +33,32 @@ function App() {
       .toFixed(2);
 
   const temItens = Object.keys(carrinho).length > 0;
-
   const toggleCarrinho = () => setCarrinhoAberto(!carrinhoAberto);
 
   return (
     <div className={`container ${carrinhoAberto ? 'carrinho-aberto' : ''}`}>
-      <nav className='navbar'> |
-        <Link to="/">Produtos</Link> |
-        <Link to="/login">Login</Link> | 
-        <Link to="/criar-login">Criar Login</Link> |
+      <nav className='navbar'>|
+        <Link to="/"
+          onClick={(e) => {
+              if (location.pathname === "/") {
+                e.preventDefault();
+                alert("Você já está em Produtos");
+              }
+            }
+          }>Produtos
+        </Link> |
+        {!user && (
+          <>
+            <Link to="/login">Login</Link> |
+            <Link to="/criar-login">Criar Login</Link> |
+          </>
+        )}
+        {user && (
+          <>
+            <span>Bem-vindo, {user.email}</span> |
+            <button onClick={logout} className="botao-logout">Sair</button> |
+          </>
+        )}
       </nav>
 
       <Routes>
@@ -76,9 +95,14 @@ function App() {
                           className='img-carrinho'
                         />
                         <p><strong>{item.nome}</strong></p>
-                        <p>Quantidade: {item.quantidade}
-                          <button type="button" className="botao-carrinho-add" onClick={() => adicionarAoCarrinho(item)}>
-                          +
+                        <p>
+                          Quantidade: {item.quantidade}
+                          <button
+                            type="button"
+                            className="botao-carrinho-add"
+                            onClick={() => adicionarAoCarrinho(item)}
+                          >
+                            +
                           </button>
                         </p>
                         <p>Subtotal: R$ {(item.valor * item.quantidade).toFixed(2)}</p>
@@ -92,7 +116,7 @@ function App() {
               )}
             </aside>
           </>
-        }/>
+        } />
 
         <Route path="/login" element={<Login />} />
         <Route path="/criar-login" element={<CriarLogin />} />
