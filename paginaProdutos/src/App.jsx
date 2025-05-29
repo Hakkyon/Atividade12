@@ -1,10 +1,8 @@
 import './App.css';
 import { useState } from 'react';
-import { produtos } from './componentes/produtos.jsx';
-import Login from './pages/Login.jsx';
-import CriarLogin from './pages/CriarLogin.jsx';
-import { Link, Routes, Route, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
+import { produtos } from './componentes/produtos';
 
 function App() {
   const [carrinho, setCarrinho] = useState({});
@@ -13,7 +11,7 @@ function App() {
   const location = useLocation();
 
   const adicionarAoCarrinho = (produto) => {
-    setCarrinho(prev => {
+    setCarrinho((prev) => {
       const novo = { ...prev };
       if (novo[produto.id]) {
         novo[produto.id].quantidade += 1;
@@ -23,36 +21,53 @@ function App() {
       }
       return novo;
     });
-
     setCarrinhoAberto(true);
   };
 
   const calcularTotal = () =>
-    Object.values(carrinho)
-      .reduce((s, item) => s + item.valor * item.quantidade, 0)
-      .toFixed(2);
+    Object.values(carrinho).reduce((s, item) => s + item.valor * item.quantidade, 0).toFixed(2);
 
   const temItens = Object.keys(carrinho).length > 0;
   const toggleCarrinho = () => setCarrinhoAberto(!carrinhoAberto);
 
   return (
     <div className={`container ${carrinhoAberto ? 'carrinho-aberto' : ''}`}>
-      <nav className='navbar'>|
-        <Link to="/"
+      <nav className="navbar"> |
+
+        <Link to="/" 
           onClick={(e) => {
-              if (location.pathname === "/") {
-                e.preventDefault();
-                alert("Você já está em Produtos");
-              }
+            if (location.pathname === '/') {
+            e.preventDefault();
+              alert('Você já está na Home');
             }
-          }>Produtos
+          }}>
+          Home
         </Link> |
+
+        <Link to="/produtos" 
+          onClick={(e) => {
+            if (location.pathname === '/produtos') {
+              e.preventDefault();
+              alert('Você já está em Produtos');
+            }
+          }}> 
+          Produtos 
+        </Link> |
+
         {!user && (
           <>
-            <Link to="/login">Login</Link> |
-            <Link to="/criar-login">Criar Login</Link> |
+            <Link to="/criar-login" 
+              onClick={(e) => {
+                if (location.pathname === '/criar-login') {
+                    e.preventDefault();
+                alert('Você já está se cadastrando');
+                }
+              }}>
+              Cadastrar-se 
+            </Link> |
           </>
         )}
+
         {user && (
           <>
             <span>Bem-vindo, {user.email}</span> |
@@ -61,66 +76,36 @@ function App() {
         )}
       </nav>
 
-      <Routes>
-        <Route path="/" element={
+      <Outlet context={{ produtos, adicionarAoCarrinho }} />
+
+      <button className="botao-carrinho" onClick={toggleCarrinho}>
+        {carrinhoAberto ? 'Fechar Carrinho' : 'Abrir Carrinho'}
+      </button>
+
+      <aside className={`carrinho ${carrinhoAberto ? 'aberto' : ''}`}>
+        <h2>Carrinho de Compras</h2>
+        <button className="fechar-carrinho" onClick={toggleCarrinho}>X</button>
+        {temItens ? (
           <>
-            <div className="produtos">
-              {produtos.map(produto => (
-                <div key={produto.id} className="produto">
-                  <img src={produto.imagem} alt={produto.nome} />
-                  <h3>{produto.nome}</h3>
-                  <p>R$ {produto.valor.toFixed(2)}</p>
-                  <button type="button" onClick={() => adicionarAoCarrinho(produto)}>
-                    Comprar
-                  </button>
-                </div>
+            <ul>
+              {Object.values(carrinho).map((item) => (
+                <li key={item.id}>
+                  <img src={item.imagem} alt={item.nome} className="img-carrinho" />
+                  <p><strong>{item.nome}</strong></p>
+                  <p>
+                    Quantidade: {item.quantidade}
+                    <button className='botao-carrinho-add' onClick={() => adicionarAoCarrinho(item)}>+</button>
+                  </p>
+                  <p>Subtotal: R$ {(item.valor * item.quantidade).toFixed(2)}</p>
+                </li>
               ))}
-            </div>
-
-            <button className="botao-carrinho" onClick={toggleCarrinho}>
-              {carrinhoAberto ? 'Fechar Carrinho' : 'Abrir Carrinho'}
-            </button>
-
-            <aside className={`carrinho ${carrinhoAberto ? 'aberto' : ''}`}>
-              <h2>Carrinho de Compras</h2>
-              <button className="fechar-carrinho" onClick={toggleCarrinho}>X</button>
-              {temItens ? (
-                <>
-                  <ul>
-                    {Object.values(carrinho).map(item => (
-                      <li key={item.id}>
-                        <img
-                          src={item.imagem}
-                          alt={item.nome}
-                          className='img-carrinho'
-                        />
-                        <p><strong>{item.nome}</strong></p>
-                        <p>
-                          Quantidade: {item.quantidade}
-                          <button
-                            type="button"
-                            className="botao-carrinho-add"
-                            onClick={() => adicionarAoCarrinho(item)}
-                          >
-                            +
-                          </button>
-                        </p>
-                        <p>Subtotal: R$ {(item.valor * item.quantidade).toFixed(2)}</p>
-                      </li>
-                    ))}
-                  </ul>
-                  <h3 className='total-preco'>Total: R$ {calcularTotal()}</h3>
-                </>
-              ) : (
-                <p>O carrinho está vazio.</p>
-              )}
-            </aside>
+            </ul>
+            <h3 className="total-preco">Total: R$ {calcularTotal()}</h3>
           </>
-        } />
-
-        <Route path="/login" element={<Login />} />
-        <Route path="/criar-login" element={<CriarLogin />} />
-      </Routes>
+        ) : (
+          <p>O carrinho está vazio.</p>
+        )}
+      </aside>
     </div>
   );
 }

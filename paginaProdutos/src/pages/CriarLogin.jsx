@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import './Login.css';
 
 function CriarLogin() {
@@ -50,6 +50,9 @@ function CriarLogin() {
           required
         />
         <button type="submit">Criar Conta</button>
+        <p>
+          <Link to="/login">Já tem conta? Faça Login aqui</Link>
+        </p>
       </form>
     </div>
   );

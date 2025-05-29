@@ -1,0 +1,87 @@
+import { useState } from 'react';
+import { useOutletContext, useNavigate } from 'react-router-dom';
+import './OrganizarProdutos.css';
+
+function AtualizarProduto() {
+  const { produtos, setProdutos } = useOutletContext();
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ id: '', nome: '', valor: '', imagem: '' });
+
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    const idNum = Number(form.id);
+    if (!produtos.find(p => p.id === idNum)) {
+      alert('Produto não encontrado');
+      return;
+    }
+
+    const produtosAtualizados = produtos.map(produto =>
+      produto.id === idNum
+        ? { ...produto, nome: form.nome, valor: parseFloat(form.valor), imagem: form.imagem }
+        : produto
+    );
+
+    setProdutos(produtosAtualizados);
+    alert('Produto atualizado com sucesso!');
+    navigate('/produtos');
+  };
+
+  return (
+    <div className="criar-produto-container">
+      <h2>Atualizar Produto</h2>
+      <form onSubmit={handleSubmit} className="form-criar-produto">
+        <input
+          className="input-criar-produto"
+          name="id"
+          placeholder="ID do Produto"
+          value={form.id}
+          onChange={handleChange}
+          required
+        />
+        <input
+          className="input-criar-produto"
+          name="nome"
+          placeholder="Novo Nome"
+          value={form.nome}
+          onChange={handleChange}
+          required
+        />
+        <input
+          className="input-criar-produto"
+          name="valor"
+          placeholder="Novo Valor"
+          type="number"
+          value={form.valor}
+          onChange={handleChange}
+          required
+        />
+        <input
+          className="input-criar-produto"
+          name="imagem"
+          placeholder="Nova URL da imagem"
+          value={form.imagem}
+          onChange={handleChange}
+          required
+        />
+
+        {form.imagem && (
+          <div className="preview-container">
+            <p>Pré-visualização da imagem:</p>
+            <img
+              src={form.imagem}
+              alt="Pré-visualização"
+              className="preview-imagem"
+              onError={(e) => { e.target.style.display = 'none'; }}
+            />
+          </div>
+        )}
+
+        <button type="submit" className="btn-criar-produto">Atualizar</button>
+      </form>
+    </div>
+  );
+}
+
+export default AtualizarProduto;

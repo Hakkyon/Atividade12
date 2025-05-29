@@ -1,0 +1,161 @@
+.organizar-produtos {
+  display: flex;
+  position: fixed;
+  margin-top: 107px;
+  margin-left: -8px;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 320px;
+  border: 10px solid orange;
+  border-radius: 8px;
+  border-left: none;
+  padding: 10px;
+  text-align: center;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 80px;
+  left: 0;
+  align-items: center;
+  width: 170px;
+  height: 355px;
+}
+
+.organizar-produtos a {
+  color: orange;
+  font-weight: bold;
+  margin-top: 15px;
+  margin-inline: 5px;
+  margin-left: 10px;
+  text-decoration: none;
+  font-size: 16px;
+  transition: opacity 0.3s ease;
+}
+
+.organizar-produtos a:hover {
+  color: #cc4c00;
+}
+
+.organizar-produtos-remover {
+  padding-bottom: 20px;
+}
+
+.text-menu {
+    color: white;
+    background-color: orange;
+    padding: 10px;
+    padding-left: 50px;
+    padding-right: 45px;
+    margin-bottom: 0;
+    margin-top: -18px;
+    border: 1px;
+    border-radius: 5px;
+    border-bottom-right-radius: none;
+
+}
+
+main {
+    margin-left: 280px;
+}
+
+.criar-produto-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px;
+  margin-left: 60px;
+  margin-right: 130px;
+  border: 10px solid orange;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.criar-produto-container h2 {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 100px;
+}
+
+.form-criar-produto {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  width: 830px;
+  height: 250px;
+}
+
+.form-criar-produto input[type="text"] {
+  padding: 10px;
+  font-size: 16px;
+  width: 200px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.3s ease;
+}
+
+.form-criar-produto input[type="text"]:focus {
+  border-color: orange;
+  outline: none;
+}
+
+.form-criar-produto button {
+  padding: 10px 20px;
+  width: 253.5px;
+  font-size: 16px;
+  background-color: orange;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form-criar-produto button:hover {
+  background-color: #cc4c00;
+}
+
+.input-criar-produto {
+  padding: 10px;
+  font-size: 16px;
+  width: 230px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.3s ease;
+}
+
+.input-criar-produto:focus {
+  border-color: orange;
+  outline: none;
+}
+
+.btn-criar-produto {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: orange;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.preview-container {
+  margin-top: 0;
+  text-align: center;
+}
+
+.preview-imagem {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+}
+
+.btn-criar-produto:hover {
+  background-color: #cc4c00;
+}
