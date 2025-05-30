@@ -1,14 +1,32 @@
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
-import { produtos } from './componentes/produtos';
+import { produtos as produtosFixos } from './componentes/produtos';
 
 function App() {
   const [carrinho, setCarrinho] = useState({});
   const [carrinhoAberto, setCarrinhoAberto] = useState(false);
+  const [produtos, setProdutos] = useState([]);
   const { user, logout } = useAuth();
   const location = useLocation();
+
+  useEffect(() => {
+    fetch('http://localhost:3000/produtos/ler')
+      .then((res) => {
+        if (!res.ok) throw new Error('Erro ao carregar produtos');
+        return res.json();
+      })
+      .then((produtosDoBanco) => {
+        const idsFixos = new Set(produtosFixos.map(p => p.id));
+        const apenasDoBanco = produtosDoBanco.filter(p => !idsFixos.has(p.id));
+        setProdutos([...produtosFixos, ...apenasDoBanco]);
+      })
+      .catch((err) => {
+        alert(err.message);
+        setProdutos(produtosFixos);
+      });
+  }, []);
 
   const adicionarAoCarrinho = (produto) => {
     setCarrinho((prev) => {
@@ -25,7 +43,9 @@ function App() {
   };
 
   const calcularTotal = () =>
-    Object.values(carrinho).reduce((s, item) => s + item.valor * item.quantidade, 0).toFixed(2);
+    Object.values(carrinho)
+      .reduce((s, item) => s + item.valor * item.quantidade, 0)
+      .toFixed(2);
 
   const temItens = Object.keys(carrinho).length > 0;
   const toggleCarrinho = () => setCarrinhoAberto(!carrinhoAberto);
@@ -33,37 +53,36 @@ function App() {
   return (
     <div className={`container ${carrinhoAberto ? 'carrinho-aberto' : ''}`}>
       <nav className="navbar"> |
-
-        <Link to="/" 
+        <Link to="/"
           onClick={(e) => {
             if (location.pathname === '/') {
-            e.preventDefault();
+              e.preventDefault();
               alert('Você já está na Home');
             }
           }}>
           Home
         </Link> |
 
-        <Link to="/produtos" 
+        <Link to="/produtos"
           onClick={(e) => {
             if (location.pathname === '/produtos') {
               e.preventDefault();
               alert('Você já está em Produtos');
             }
-          }}> 
-          Produtos 
+          }}>
+          Produtos
         </Link> |
 
         {!user && (
           <>
-            <Link to="/criar-login" 
+            <Link to="/criar-login"
               onClick={(e) => {
                 if (location.pathname === '/criar-login') {
-                    e.preventDefault();
-                alert('Você já está se cadastrando');
+                  e.preventDefault();
+                  alert('Você já está se cadastrando');
                 }
               }}>
-              Cadastrar-se 
+              Cadastrar-se
             </Link> |
           </>
         )}
@@ -76,7 +95,7 @@ function App() {
         )}
       </nav>
 
-      <Outlet context={{ produtos, adicionarAoCarrinho }} />
+      <Outlet context={{ produtos, setProdutos, adicionarAoCarrinho }} />
 
       <button className="botao-carrinho" onClick={toggleCarrinho}>
         {carrinhoAberto ? 'Fechar Carrinho' : 'Abrir Carrinho'}

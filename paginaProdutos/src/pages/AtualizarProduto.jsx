@@ -7,25 +7,43 @@ function AtualizarProduto() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ id: '', nome: '', valor: '', imagem: '' });
 
-  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-  const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const idNum = Number(form.id);
-    if (!produtos.find(p => p.id === idNum)) {
+    if (!produtos.find((p) => p.id === idNum)) {
       alert('Produto não encontrado');
       return;
     }
 
-    const produtosAtualizados = produtos.map(produto =>
-      produto.id === idNum
-        ? { ...produto, nome: form.nome, valor: parseFloat(form.valor), imagem: form.imagem }
-        : produto
-    );
+    try {
+      const res = await fetch(`http://localhost:3000/produtos/atualizar?id=${form.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nome: form.nome,
+          valor: parseFloat(form.valor),
+          imagem: form.imagem,
+        }),
+      });
 
-    setProdutos(produtosAtualizados);
-    alert('Produto atualizado com sucesso!');
-    navigate('/produtos');
+      if (!res.ok) throw new Error();
+
+      const produtosAtualizados = produtos.map((produto) =>
+        produto.id === idNum
+          ? { ...produto, nome: form.nome, valor: parseFloat(form.valor), imagem: form.imagem }
+          : produto
+      );
+
+      setProdutos(produtosAtualizados);
+      alert('Produto atualizado com sucesso!');
+      navigate('/produtos');
+    } catch {
+      alert('Erro ao atualizar produto');
+    }
   };
 
   return (
@@ -73,7 +91,7 @@ function AtualizarProduto() {
               src={form.imagem}
               alt="Pré-visualização"
               className="preview-imagem"
-              onError={(e) => { e.target.style.display = 'none'; }}
+              onError={(e) => {e.target.style.display = 'none';}}
             />
           </div>
         )}

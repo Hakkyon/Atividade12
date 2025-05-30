@@ -1,7 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import http from "http";
-import router from "./routes"; // ✅ Importando as rotas corretamente
+import router from "./routes";
 
 const app = express();
 
@@ -9,8 +9,12 @@ const app = express();
 app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 
-// ✅ Adicionando o uso do router
-app.use(router); // Agora todas as rotas devem ser acessadas via /api
+app.get("/", (req, res) => {
+  res.send("Servidor está rodando 🚀");
+});
+
+// Adicionando o uso do router
+app.use(router);
 
 // Tratamento global de erros
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {

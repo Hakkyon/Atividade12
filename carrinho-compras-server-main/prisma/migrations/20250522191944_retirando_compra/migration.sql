@@ -1,12 +1,4 @@
-/*
-  Warnings:
 
-  - You are about to drop the `Compra` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `ItemCompra` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the column `preco` on the `Produto` table. All the data in the column will be lost.
-  - Added the required column `valor` to the `Produto` table without a default value. This is not possible if the table is not empty.
-
-*/
 -- DropIndex
 DROP INDEX "ItemCompra_produtoId_compraId_key";
 

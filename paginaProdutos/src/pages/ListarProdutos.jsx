@@ -10,6 +10,7 @@ export default function ListarProdutos() {
       <ul className="produtos">
         {produtos.map((produto) => (
           <li className="produto" key={produto.id}>
+            <p className="produto-id"><strong>ID:</strong> {produto.id}</p>
             <img 
               src={produto.imagem} 
               alt={produto.nome} 

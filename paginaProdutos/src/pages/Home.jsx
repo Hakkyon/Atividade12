@@ -8,7 +8,10 @@ function Home() {
     <div className="produtos">
       {produtos.map((produto) => (
         <div className="produto" key={produto.id}>
-          <img src={produto.imagem} alt={produto.nome} />
+          <img 
+            src={produto.imagem} 
+            alt={produto.nome}
+          />
           <h3>{produto.nome}</h3>
           <p>R$ {produto.valor.toFixed(2)}</p>
           <button onClick={() => adicionarAoCarrinho(produto)}>Comprar</button>
