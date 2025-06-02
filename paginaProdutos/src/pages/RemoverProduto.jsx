@@ -1,21 +1,24 @@
 import { useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
-import './OrganizarProdutos.css'; // Importa o CSS existente
+import './OrganizarProdutos.css';
 
 function RemoverProduto() {
   const [id, setId] = useState('');
-  const { produtos, setProdutos } = useOutletContext();
 
-  const handleDelete = () => {
-    const idNum = Number(id);
-    if (!produtos.find(p => p.id === idNum)) {
-      alert('Produto não encontrado');
-      return;
+  const handleDelete = async () => {
+    if (!id) return alert("Informe o ID");
+
+    try {
+      const res = await fetch(`http://localhost:3000/produtos/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) throw new Error();
+      alert('Produto removido com sucesso!');
+      setId('');
+      
+    } catch {
+      alert('Erro ao remover produto');
     }
-    const novosProdutos = produtos.filter(produto => produto.id !== idNum);
-    setProdutos(novosProdutos);
-    alert('Produto removido com sucesso!');
-    setId('');
   };
 
   return (

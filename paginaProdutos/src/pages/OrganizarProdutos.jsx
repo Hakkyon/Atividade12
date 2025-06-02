@@ -1,15 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { produtos as produtosIniciais } from '../componentes/produtos';
 import './OrganizarProdutos.css';
 
 function OrganizarProdutos() {
-  const [produtos, setProdutos] = useState(produtosIniciais);
+  const [produtos, setProdutos] = useState([]);
   const location = useLocation();
 
   const adicionarAoCarrinho = (produto) => {
     console.log('Produto adicionado ao carrinho:', produto);
   };
+
+  useEffect(() => {
+    fetch('http://localhost:3000/produtos/ler')
+      .then((res) => {
+        if (!res.ok) throw new Error('Erro ao carregar produtos');
+        return res.json();
+      })
+      .then((data) => setProdutos(data))
+      .catch((err) => {
+        alert(err.message);
+      });
+  }, []);
 
   return (
     <div style={{ display: 'flex', marginTop: '60px' }}>

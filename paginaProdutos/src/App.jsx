@@ -2,7 +2,6 @@ import './App.css';
 import { useState, useEffect } from 'react';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from './contexts/AuthContext';
-import { produtos as produtosFixos } from './componentes/produtos';
 
 function App() {
   const [carrinho, setCarrinho] = useState({});
@@ -17,16 +16,11 @@ function App() {
         if (!res.ok) throw new Error('Erro ao carregar produtos');
         return res.json();
       })
-      .then((produtosDoBanco) => {
-        const idsFixos = new Set(produtosFixos.map(p => p.id));
-        const apenasDoBanco = produtosDoBanco.filter(p => !idsFixos.has(p.id));
-        setProdutos([...produtosFixos, ...apenasDoBanco]);
-      })
+      .then((data) => setProdutos(data))
       .catch((err) => {
         alert(err.message);
-        setProdutos(produtosFixos);
       });
-  }, []);
+  }, [location.pathname]);
 
   const adicionarAoCarrinho = (produto) => {
     setCarrinho((prev) => {
@@ -95,7 +89,7 @@ function App() {
         )}
       </nav>
 
-      <Outlet context={{ produtos, setProdutos, adicionarAoCarrinho }} />
+      <Outlet context={{ produtos, adicionarAoCarrinho }} />
 
       <button className="botao-carrinho" onClick={toggleCarrinho}>
         {carrinhoAberto ? 'Fechar Carrinho' : 'Abrir Carrinho'}
@@ -103,7 +97,7 @@ function App() {
 
       <aside className={`carrinho ${carrinhoAberto ? 'aberto' : ''}`}>
         <h2>Carrinho de Compras</h2>
-        <button className="fechar-carrinho" onClick={toggleCarrinho}>X</button>
+        <button className="fechar-carrinho" onClick={toggleCarrinho}>x</button>
         {temItens ? (
           <>
             <ul>

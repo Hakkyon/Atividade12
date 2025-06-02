@@ -1,16 +1,15 @@
 import { useState } from 'react';
-import { useOutletContext, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './OrganizarProdutos.css';
 
 function CriarProduto() {
-  const { produtos, setProdutos } = useOutletContext();
   const navigate = useNavigate();
   const [form, setForm] = useState({ nome: '', valor: '', imagem: '' });
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -40,19 +39,15 @@ function CriarProduto() {
 
       if (!res.ok) {
         const erro = await res.json();
-        throw new Error(erro.error || 'Erro desconhecido ao criar produto.');
+        throw new Error(erro.erro || 'Erro desconhecido');
       }
-
-      const produtoCriado = await res.json();
-
-      setProdutos([...produtos, produtoCriado]);
 
       alert('Produto criado com sucesso!');
       setForm({ nome: '', valor: '', imagem: '' });
       navigate('/produtos');
 
     } catch (err) {
-      console.error(err);
+      console.error (err);
       alert(`Erro ao criar produto: ${err.message}`);
     }
   };

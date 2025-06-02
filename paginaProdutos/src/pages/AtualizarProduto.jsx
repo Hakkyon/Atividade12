@@ -1,11 +1,18 @@
-import { useState } from 'react';
-import { useOutletContext, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './OrganizarProdutos.css';
 
 function AtualizarProduto() {
-  const { produtos, setProdutos } = useOutletContext();
   const navigate = useNavigate();
   const [form, setForm] = useState({ id: '', nome: '', valor: '', imagem: '' });
+  const [produtos, setProdutos] = useState([]);
+  
+  useEffect(() => {
+    fetch("http://localhost:3000/produtos/ler")
+      .then((res) => res.json())
+      .then(setProdutos)
+      .catch(console.error);
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -20,7 +27,7 @@ function AtualizarProduto() {
     }
 
     try {
-      const res = await fetch(`http://localhost:3000/produtos/atualizar?id=${form.id}`, {
+      const res = await fetch(`http://localhost:3000/produtos/atualizar/${form.id}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -29,18 +36,11 @@ function AtualizarProduto() {
           imagem: form.imagem,
         }),
       });
-
+      
       if (!res.ok) throw new Error();
-
-      const produtosAtualizados = produtos.map((produto) =>
-        produto.id === idNum
-          ? { ...produto, nome: form.nome, valor: parseFloat(form.valor), imagem: form.imagem }
-          : produto
-      );
-
-      setProdutos(produtosAtualizados);
       alert('Produto atualizado com sucesso!');
       navigate('/produtos');
+
     } catch {
       alert('Erro ao atualizar produto');
     }
@@ -83,7 +83,6 @@ function AtualizarProduto() {
           onChange={handleChange}
           required
         />
-
         {form.imagem && (
           <div className="preview-container">
             <p>Pré-visualização da imagem:</p>
